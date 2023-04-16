@@ -17,6 +17,17 @@ button {
     cursor: pointer;
 }
 
+input[type="text"] {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    border: none;
+    width: 100%;
+}
+
+input[type="text"]:focus {
+    outline: 1px solid darkgrey;
+}
+
 #container {
     max-width: 1022px;
     margin: 0 auto;
@@ -48,28 +59,20 @@ button {
     font-weight: 500;
 }
 
-#comment-form .counter {
+#counter {
     color: #A1A1A1;
     font-size: 14px;
     font-style: italic;
 }
 
-#comment-form #comment-input {
-    width: 100%;
+#comment-input {
     height: 61px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    border: none;
     font-size: inherit;
     padding-left: 30px;
     box-sizing: border-box;
 }
 
-#comment-form #comment-input:focus {
-    outline: none;
-}
-
-#comment-form #comment-input::placeholder {
+#comment-input::placeholder {
     color: #A1A1A1;
 }
 
@@ -89,10 +92,6 @@ button {
     color: #A1A1A1;
     background-color: lightgray;
     cursor: not-allowed;
-}
-
-.comment * {
-    /*outline: 1px solid green;*/
 }
 
 .comment-intrinsic {
@@ -131,6 +130,7 @@ button {
     display: flex;
     justify-content: center;
     cursor: pointer;
+    user-select: none;
 }
 
 .actions .minus {
@@ -219,4 +219,11 @@ button {
 
 #users .active:hover {
     background: lightblue;
+}
+
+#sub-comment-form {
+    display: flex;
+    gap: 10px;
+    margin-left: 90px;
+    margin-top: 20px;
 }

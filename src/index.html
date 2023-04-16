@@ -21,11 +21,13 @@
     <hr />
 
     <form id="comment-form">
-        <img class="avatar" alt="" src="./images/avatar.png">
+        <img class="avatar" alt="" src=""> <!-- 'src' will be rendered by JS -->
         <div class="input-container">
             <div class="label-container">
-                <span class="user-name">Максим</span>
-                <span class="counter">Макс символов</span>
+                <span class="user-name">
+                    <!-- Will be rendered by JS -->
+                </span>
+                <span id="counter">Макс. 1000 символов</span>
             </div>
             <input id="comment-input" type="text" placeholder="Введите текст сообщения..." autocomplete="off"/>
         </div>
@@ -39,11 +41,11 @@
 </body>
 
 <script defer>
-    const users = [
-        new User(1, 'Максим Авдеенко', 'avatar.png'),
-        new User(2, 'Алексей_1994b', 'avatar_2.png'),
-        new User(3, 'Джунбокс3000', 'avatar_3.png')
-    ];
+    const users = {
+      0: new User(0, 'Максим Авдеенко', 'avatar.png'),
+      1: new User(1, 'Алексей_1994b', 'avatar_2.png'),
+      2: new User(2, 'Джунбокс3000', 'avatar_3.png')
+    };
 
     new App(users);
 </script>
