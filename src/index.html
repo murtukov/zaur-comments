@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog Comments</title>
+    <script src="./main.js" defer></script>
+    <link rel="stylesheet" href="main.css" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="container">
+    <form id="comment-form">
+        <img class="avatar" alt="" src="./images/avatar.png">
+        <div class="input-container">
+            <div class="label-container">
+                <span class="user-name">Максим</span>
+                <span class="counter">Макс символов</span>
+            </div>
+            <input id="comment-input" type="text" placeholder="Введите текст сообщения..." autocomplete="off"/>
+        </div>
+        <button type="submit">Отправить</button>
+    </form>
+    <div class="comment">
+        <div class="comment-intrinsic">
+            <img class="avatar" alt="" src="./images/avatar_2.png">
+            <div>
+                <div class="heading">
+                    <span class="user-name">Alex</span>
+                    <span class="date">15.01 22:30</span>
+                </div>
+                <p>
+                    Самое обидное когда сценарий по сути есть - в виде книг, где нет сюжетных дыр, всё логично, стройное
+                    повествование и достаточно взять и экранизировать оригинал как это было в первых фильмах с
+                    минимальным
+                    количеством отсебятины и зритель с восторгом примет любой такой фильм и сериал, однако вместо этого
+                    'Кольца власти' просто позаимствовали имена из оригинала, куски истории, мало связанные между собой
+                    и
+                    выдали очередной среднячковый сериал на один раз в лучшем случае.
+                </p>
+                <div class="actions">
+                <span class="action-respond">
+                    <img src="./images/Reply.svg">
+                    <span class="reply">Ответить</span>
+                </span>
+                    <span class="action-favorite">
+                    <img src="./images/heart_icon.svg">
+                    <span class="favorite">В избранном</span>
+                </span>
+                    <div class="minus">-</div>
+                    <span class="likes-counter">6</span>
+                    <div class="plus">+</div>
+                </div>
+            </div>
+        </div>
+        <div class="comment sub-comment">
+            <div class="comment-intrinsic">
+                <img class="avatar" alt="" src="./images/avatar_3.png">
+                <div>
+                    <div class="heading">
+                        <span class="user-name">Michael</span>
+                        <span class="respondee">
+                            <img src="./images/Reply.svg">
+                            <span class="reply">Alex</span>
+                        </span>
+                        <span class="date">15.01 22:30</span>
+                    </div>
+                    <p>
+                        Наверное, самая большая ошибка создателей сериала была в том, что они поставили уж слишком много
+                        надежд на поддержку фанатов вселенной. Как оказалось на деле, большинство 'фанатов' с самой
+                        настоящей яростью и желчью стали уничтожать сериал, при этом объективности в отзывах самый
+                        минимум.
+                    </p>
+                    <div class="actions">
+                    <span class="action-respond">
+                        <img src="./images/Reply.svg">
+                        <span class="reply">Ответить</span>
+                    </span>
+                        <span class="action-favorite">
+                        <img src="./images/heart_icon.svg">
+                        <span class="favorite">В избранном</span>
+                    </span>
+                        <div class="minus">-</div>
+                        <span class="likes-counter">6</span>
+                        <div class="plus">+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
