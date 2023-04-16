@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Blog Comments</title>
-    <script src="./main.js" defer></script>
+    <script src="./main.js"></script>
     <link rel="stylesheet" href="main.css" type="text/css"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
 </head>
@@ -14,17 +14,8 @@
 
     <div id="users">
         <h4>Choose user</h4>
-        <div class="user" data-user-id="1">
-            <img src="./images/avatar.png" width="30" height="30">
-            <span>Максим Авдеенко</span>
-        </div>
-        <div class="user" data-user-id="2">
-            <img src="./images/avatar_2.png" width="30" height="30">
-            <span>Алексей_1994b</span>
-        </div>
-        <div class="user" data-user-id="3">
-            <img src="./images/avatar_3.png" width="30" height="30">
-            <span>Джунбокс3000</span>
+        <div id="user-list">
+            <!-- Users list rendered in JS -->
         </div>
     </div>
 
@@ -41,73 +32,17 @@
         </div>
         <button type="submit">Отправить</button>
     </form>
-    <div class="comment">
-        <div class="comment-intrinsic">
-            <img class="avatar" alt="" src="./images/avatar_2.png">
-            <div>
-                <div class="heading">
-                    <span class="user-name">Alex</span>
-                    <span class="date">15.01 22:30</span>
-                </div>
-                <p>
-                    Самое обидное когда сценарий по сути есть - в виде книг, где нет сюжетных дыр, всё логично, стройное
-                    повествование и достаточно взять и экранизировать оригинал как это было в первых фильмах с
-                    минимальным
-                    количеством отсебятины и зритель с восторгом примет любой такой фильм и сериал, однако вместо этого
-                    'Кольца власти' просто позаимствовали имена из оригинала, куски истории, мало связанные между собой
-                    и
-                    выдали очередной среднячковый сериал на один раз в лучшем случае.
-                </p>
-                <div class="actions">
-                    <a href="#" class="action-respond">
-                        <img src="./images/Reply.svg">
-                        <span class="reply">Ответить</span>
-                    </a>
-                    <a href="#" class="action-favorite">
-                        <img src="./images/heart_icon.svg">
-                        <span class="favorite">В избранном</span>
-                    </a>
-                    <div class="minus">-</div>
-                    <span class="likes-counter">6</span>
-                    <div class="plus">+</div>
-                </div>
-            </div>
-        </div>
-        <div class="comment sub-comment">
-            <div class="comment-intrinsic">
-                <img class="avatar" alt="" src="./images/avatar_3.png">
-                <div>
-                    <div class="heading">
-                        <span class="user-name">Michael</span>
-                        <span class="respondee">
-                            <img src="./images/Reply.svg">
-                            <span class="reply">Alex</span>
-                        </span>
-                        <span class="date">15.01 22:30</span>
-                    </div>
-                    <p>
-                        Наверное, самая большая ошибка создателей сериала была в том, что они поставили уж слишком много
-                        надежд на поддержку фанатов вселенной. Как оказалось на деле, большинство 'фанатов' с самой
-                        настоящей яростью и желчью стали уничтожать сериал, при этом объективности в отзывах самый
-                        минимум.
-                    </p>
-                    <div class="actions">
-                        <a href="#" class="action-respond">
-                            <img src="./images/Reply.svg">
-                            <span class="reply">Ответить</span>
-                        </a>
-                        <a href="#" class="action-favorite">
-                            <img src="./images/heart-unfilled.svg">
-                            <span class="favorite">В избранное</span>
-                        </a>
-                        <div class="minus">-</div>
-                        <span class="likes-counter">6</span>
-                        <div class="plus">+</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 </body>
+
+<script defer>
+    const users = [
+        new User(1, 'Максим Авдеенко', 'avatar.png'),
+        new User(2, 'Алексей_1994b', 'avatar_2.png'),
+        new User(3, 'Джунбокс3000', 'avatar_3.png')
+    ];
+
+    new App(users);
+</script>
+
 </html>

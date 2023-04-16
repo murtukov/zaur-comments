@@ -206,3 +206,7 @@ button {
 #users .user:last-of-type {
     margin-bottom: 0;
 }
+
+#users .active {
+    background: lightblue;
+}
