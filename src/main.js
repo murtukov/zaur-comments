@@ -2,16 +2,44 @@
 class App {
     constructor(users) {
         this.messageCounter = 0;
+        this.comments = [];
+        // Find all HTML elements
+        this.elements = {
+            input: document.getElementById('comment-input'),
+            form: document.getElementById('comment-form'),
+            button: document.querySelector('#comment-form button'),
+            commentsContainer: document.getElementById('comments-container'),
+        };
         this.users = users;
         this.currentUser = users[0];
         this.renderUserList();
+        this.elements.input.oninput = (e) => {
+            const el = e.currentTarget;
+            console.log('==> ', el.value);
+            // Disable/enable button
+            if (el.value.length > 0) {
+                this.elements.button.removeAttribute('disabled');
+            }
+            else {
+                this.elements.button.setAttribute('disabled', 'on');
+            }
+        };
+        this.elements.form.onsubmit = (e) => {
+            e.preventDefault();
+            const newComment = new Commentary(this.elements.input.value, this.currentUser);
+            this.comments.push(newComment);
+            const commentElement = newComment.getHTMLElement();
+            this.elements.input.value = '';
+            this.elements.button.setAttribute('disabled', '');
+            this.elements.commentsContainer.appendChild(commentElement);
+        };
     }
     renderUserList() {
         const userList = document.getElementById('user-list');
         userList.innerHTML = '';
         for (let i = 0; i < this.users.length; i++) {
             const user = this.users[i];
-            const userElement = this.createElementFromString(`
+            const userElement = createElementFromString(`
         <div class="user ${user.id === this.currentUser.id ? 'active' : ''}" data-user-id="${user.id}">
             <img src="./images/${user.avatar}" width="30" height="30">
             <span>${user.name}</span>
@@ -23,10 +51,6 @@ class App {
             };
             userList.appendChild(userElement);
         }
-    }
-    createElementFromString(htmlString) {
-        const parser = new DOMParser();
-        return parser.parseFromString(htmlString, "text/html").body.firstChild;
     }
 }
 class User {
@@ -54,7 +78,7 @@ class Commentary {
         return `
       <div class="comment">
           <div class="comment-intrinsic">
-              <img class="avatar" alt="" src="./images/avatar_2.png">
+              <img class="avatar" alt="" src="./images/${this.author.avatar}">
               <div>
                   <div class="heading">
                       <span class="user-name">${this.author.name}</span>
@@ -63,7 +87,7 @@ class Commentary {
                   <p>${this.text}</p>
                   <div class="actions">
                       <a href="#" class="action-respond">
-                          <img src="${this.author.avatar}">
+                          <img src="./images/reply.svg">
                           <span class="reply">Ответить</span>
                       </a>
                       <a href="#" class="action-favorite">
@@ -79,4 +103,13 @@ class Commentary {
         </div>
     `;
     }
+    getHTMLElement() {
+        const stringHtml = this.getTemplate();
+        const element = createElementFromString(stringHtml);
+        return element;
+    }
+}
+function createElementFromString(htmlString) {
+    const parser = new DOMParser();
+    return parser.parseFromString(htmlString, "text/html").body.firstChild;
 }

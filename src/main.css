@@ -80,9 +80,15 @@ button {
     border-radius: 5px;
     border: none;
     margin-bottom: 1px;
+    color: black;
+    background-color: #ABD873;
+    font-size: inherit;
+}
+
+#comment-form button:disabled {
     color: #A1A1A1;
     background-color: lightgray;
-    font-size: inherit;
+    cursor: not-allowed;
 }
 
 .comment * {
@@ -208,5 +214,9 @@ button {
 }
 
 #users .active {
+    background: lightblue;
+}
+
+#users .active:hover {
     background: lightblue;
 }
