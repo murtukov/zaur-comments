@@ -199,16 +199,13 @@ input[type="text"]:focus {
     box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
 }
 
-@media screen and (max-width: 1790px) {
-    #users {
-        position: relative;
-        left: unset;
-        top: unset;
-    }
+#users hr {
+    margin-block: 10px;
+    border-width: 1px;
 }
 
 #users h4 {
-    margin-top: 0;
+    margin-block: 0;
     padding-inline: 10px;
 }
 
@@ -247,4 +244,24 @@ input[type="text"]:focus {
 
 .sub-comment-input {
     padding: 10px;
+}
+
+@media screen and (max-width: 1790px) {
+    #users {
+        position: relative;
+        left: unset;
+        top: unset;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #user-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    #users .user {
+        margin-bottom: 0;
+    }
 }

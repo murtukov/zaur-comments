@@ -9,7 +9,7 @@ type HTMLElements = {
   purgeButton: HTMLImageElement
 }
 
-type CommentData = {
+type TCommentData = {
   id: number,
   author: number,
   timestamp: string,
@@ -19,9 +19,16 @@ type CommentData = {
   likes: number
 }
 
-type AppData = {
-  comments: Array<CommentData>;
+type TAppData = {
+  comments: Array<TCommentData>;
   currentUser: number;
+}
+
+type TCommentary = {
+  text: string,
+  author: User,
+  app: App,
+  parent?: Commentary | null
 }
 
 class App {
@@ -57,7 +64,7 @@ class App {
     this.elements.purgeButton.onclick = this.purge;
   }
 
-  handleInputChange(e: Event) {
+  private handleInputChange(e: Event) {
     const el = e.currentTarget as HTMLInputElement;
     const {counter, button} = this.elements;
 
@@ -75,7 +82,7 @@ class App {
     counter.innerText = `${el.value.length}/1000`;
   }
 
-  handleFormSubmit(e: SubmitEvent) {
+  private handleFormSubmit(e: SubmitEvent) {
     e.preventDefault();
     const {input, button, commentsContainer} = this.elements;
 
@@ -95,7 +102,7 @@ class App {
     this.persist();
   }
 
-  renderUserList() {
+  private renderUserList() {
     const userList = document.getElementById('user-list')!;
 
     userList.innerHTML = '';
@@ -119,7 +126,7 @@ class App {
     this.elements.avatar.setAttribute('src', `./images/${this.currentUser.avatar}`);
   }
 
-  handleUserSelect(user: User) {
+  private handleUserSelect(user: User) {
     this.currentUser = user;
     this.elements.userName.innerText = user.name;
     this.elements.avatar.setAttribute('src', `./images/${user.avatar}`);
@@ -133,7 +140,7 @@ class App {
     this.persist();
   }
 
-  renderAllComments() {
+  private renderAllComments() {
     for (const comment of Object.values(this.comments)) {
       if (comment.parent) {
         const el = comment.getHTMLElement(true);
@@ -146,7 +153,7 @@ class App {
     }
   }
 
-  persist() {
+  public persist() {
     const commentsData = [];
 
     // Collect all comments' data
@@ -161,12 +168,12 @@ class App {
     }));
   }
 
-  load() {
+  private load() {
     const stringData = localStorage.getItem('comment_app');
 
     if (!stringData) return;
 
-    const rawData: AppData = JSON.parse(stringData);
+    const rawData: TAppData = JSON.parse(stringData);
 
     // Convert comments data into real Commentary objects (without parents)
     for (const commentData of Object.values(rawData.comments)) {
@@ -193,7 +200,7 @@ class App {
     this.currentUser = this.users[rawData.currentUser];
   }
 
-  purge() {
+  private purge() {
     localStorage.clear();
     location.reload();
   }
@@ -210,20 +217,13 @@ class User {
     this.avatar = avatar;
   }
 
-  getData() {
+  public getData() {
     return {
       id: this.id,
       name: this.name,
       avatar: this.avatar
     };
   }
-}
-
-type TCommentary = {
-  text: string,
-  author: User,
-  app: App,
-  parent?: Commentary | null
 }
 
 class Commentary {
@@ -238,7 +238,6 @@ class Commentary {
   app: App;
   // HTML representation of this comment
   commentEl?: HTMLDivElement;
-
 
   constructor({text, author, app, parent}: TCommentary) {
     this.text = text;
@@ -332,7 +331,6 @@ class Commentary {
           <button type="submit" name="submit" disabled>Отправить</input>
       </form>
     `);
-
 
     const input = replyForm.elements.namedItem('message') as HTMLInputElement;
     const submit = replyForm.elements.namedItem('submit') as HTMLInputElement;
