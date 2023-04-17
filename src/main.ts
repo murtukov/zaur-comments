@@ -364,7 +364,7 @@ class Commentary {
 
   private handleReplyButtonPress() {
     // Don't add the form multiple times
-    if (this.commentEl!.querySelector('#sub-comment-form')) return;
+    document.querySelector('#sub-comment-form')?.remove();
 
     const replyForm = this.createReplyForm();
     this.commentEl!.appendChild(replyForm);

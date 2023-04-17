@@ -43,7 +43,6 @@ input[type="text"]:focus {
 }
 
 #comment-form {
-    /*border: 1px solid lightblue;*/
     display: flex;
     gap: 30px;
 }

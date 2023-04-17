@@ -263,9 +263,9 @@ class Commentary {
         return replyForm;
     }
     handleReplyButtonPress() {
+        var _a;
         // Don't add the form multiple times
-        if (this.commentEl.querySelector('#sub-comment-form'))
-            return;
+        (_a = document.querySelector('#sub-comment-form')) === null || _a === void 0 ? void 0 : _a.remove();
         const replyForm = this.createReplyForm();
         this.commentEl.appendChild(replyForm);
         // Focus on the input
