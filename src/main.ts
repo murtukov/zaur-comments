@@ -68,6 +68,8 @@ class App {
     const el = e.currentTarget as HTMLInputElement;
     const {counter, button} = this.elements;
 
+    el.style.height = (el.scrollHeight)+"px";
+
     if (el.value.length > 1000) {
       // Handle length validation
     }
@@ -95,10 +97,10 @@ class App {
     this.comments[newComment.id] = newComment;
     const commentElement = newComment.getHTMLElement();
 
-    input.value = '';
+    input.value = ''; // clear input
+    input.style.height = "61px"; //reset size
     button.setAttribute('disabled', '')
     commentsContainer.appendChild(commentElement);
-
     this.persist();
   }
 

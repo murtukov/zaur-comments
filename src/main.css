@@ -17,14 +17,14 @@ button {
     cursor: pointer;
 }
 
-input[type="text"] {
+textarea {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     border: none;
     width: 100%;
 }
 
-input[type="text"]:focus {
+textarea:focus {
     outline: 1px solid darkgrey;
 }
 
@@ -77,8 +77,10 @@ input[type="text"]:focus {
 #comment-input {
     height: 61px;
     font-size: inherit;
-    padding-left: 30px;
+    padding: 20px 30px;
     box-sizing: border-box;
+    overflow: hidden;
+    resize: none;
 }
 
 #comment-input::placeholder {
