@@ -5,41 +5,55 @@ class App {
         this.lastCommentId = 0;
         // Find all HTML elements
         this.elements = {
-            input: document.getElementById('comment-input'),
-            form: document.getElementById('comment-form'),
+            avatar: document.querySelector('.avatar'),
             button: document.querySelector('#comment-form button'),
             commentsContainer: document.getElementById('comments-container'),
             counter: document.getElementById('counter'),
+            form: document.getElementById('comment-form'),
+            input: document.getElementById('comment-input'),
+            purgeButton: document.getElementById('purge'),
             userName: document.querySelector('.user-name'),
-            avatar: document.querySelector('.avatar')
         };
         this.users = users;
+        this.currentUser = users[0];
         // Load data from LocalStorage
         this.load();
-        this.currentUser = users[0];
         this.renderUserList();
-        this.renderComments();
-        this.elements.input.oninput = (e) => {
-            const el = e.currentTarget;
-            // Disable/enable button
-            if (el.value.length > 0) {
-                this.elements.button.removeAttribute('disabled');
-            }
-            else {
-                this.elements.button.setAttribute('disabled', 'on');
-            }
-            this.elements.counter.innerText = `${el.value.length}/1000`;
-        };
-        this.elements.form.onsubmit = (e) => {
-            e.preventDefault();
-            const newComment = new Commentary(this.elements.input.value, this.currentUser, this);
-            this.comments[newComment.id] = newComment;
-            const commentElement = newComment.getHTMLElement();
-            this.elements.input.value = '';
-            this.elements.button.setAttribute('disabled', '');
-            this.elements.commentsContainer.appendChild(commentElement);
-            this.persist();
-        };
+        this.renderAllComments();
+        // Set initial handlers
+        this.elements.input.oninput = this.handleInputChange.bind(this);
+        this.elements.form.onsubmit = this.handleFormSubmit.bind(this);
+        this.elements.purgeButton.onclick = this.purge;
+    }
+    handleInputChange(e) {
+        const el = e.currentTarget;
+        const { counter, button } = this.elements;
+        if (el.value.length > 1000) {
+            // Handle length validation
+        }
+        // Disable/enable button
+        if (el.value.length > 0) {
+            button.removeAttribute('disabled');
+        }
+        else {
+            button.setAttribute('disabled', '');
+        }
+        counter.innerText = `${el.value.length}/1000`;
+    }
+    handleFormSubmit(e) {
+        e.preventDefault();
+        const { input, button, commentsContainer } = this.elements;
+        const newComment = new Commentary({
+            text: input.value,
+            author: this.currentUser,
+            app: this
+        });
+        this.comments[newComment.id] = newComment;
+        const commentElement = newComment.getHTMLElement();
+        input.value = '';
+        button.setAttribute('disabled', '');
+        commentsContainer.appendChild(commentElement);
+        this.persist();
     }
     renderUserList() {
         const userList = document.getElementById('user-list');
@@ -52,27 +66,42 @@ class App {
         </div>
       `);
             userElement.onclick = () => {
-                this.currentUser = user;
-                this.elements.userName.innerText = user.name;
-                this.elements.avatar.setAttribute('src', `./images/${user.avatar}`);
-                this.renderUserList();
-                this.persist();
+                this.handleUserSelect(user);
             };
             userList.appendChild(userElement);
         }
         this.elements.userName.innerText = this.currentUser.name;
         this.elements.avatar.setAttribute('src', `./images/${this.currentUser.avatar}`);
     }
-    renderComments() {
+    handleUserSelect(user) {
+        this.currentUser = user;
+        this.elements.userName.innerText = user.name;
+        this.elements.avatar.setAttribute('src', `./images/${user.avatar}`);
+        const subCommentForm = document.getElementById('sub-comment-form');
+        if (subCommentForm) {
+            subCommentForm.children[0].setAttribute('src', `./images/${user.avatar}`);
+        }
+        this.renderUserList();
+        this.persist();
+    }
+    renderAllComments() {
+        console.log(this.comments);
         for (const comment of Object.values(this.comments)) {
-            const el = comment.getHTMLElement();
-            this.elements.commentsContainer.appendChild(el);
+            if (comment.parent) {
+                const el = comment.getHTMLElement(true);
+                const parent = document.querySelector(`.comment[data-id="${comment.parent.id}"]`);
+                parent.appendChild(el);
+            }
+            else {
+                const el = comment.getHTMLElement();
+                this.elements.commentsContainer.appendChild(el);
+            }
         }
     }
     persist() {
         const commentsData = [];
         // Collect all comments' data
-        for (const [key, comment] of Object.entries(this.comments)) {
+        for (const comment of Object.values(this.comments)) {
             commentsData.push(comment.getData());
         }
         localStorage.setItem('comment_app', JSON.stringify({
@@ -85,29 +114,30 @@ class App {
         const stringData = localStorage.getItem('comment_app');
         if (!stringData)
             return;
-        const localStorageData = JSON.parse(stringData);
-        // Convert comments data into real Commentary objects
-        for (const commentData of Object.values(localStorageData.comments)) {
-            console.log('raw ==>', commentData);
-            const commentary = new Commentary(
-            // @ts-ignore
-            commentData.text, 
-            // @ts-ignore
-            this.users[commentData.author], this, null);
-            // @ts-ignore
+        const rawData = JSON.parse(stringData);
+        // Convert comments data into real Commentary objects (without parents)
+        for (const commentData of Object.values(rawData.comments)) {
+            const commentary = new Commentary({
+                text: commentData.text,
+                author: this.users[commentData.author],
+                app: this
+            });
             commentary.setFavorite(commentData.favorite);
-            // @ts-ignore
             commentary.setLikes(commentData.likes);
             this.comments[commentary.id] = commentary;
         }
         // Set parents
-        for (const commentData of Object.values(localStorageData.comments)) {
-            // @ts-ignore
-            if (commentData.parent) {
-                // @ts-ignore
+        for (const commentData of Object.values(rawData.comments)) {
+            if (typeof commentData.parent === 'number') {
                 this.comments[commentData.id].setParent(this.comments[commentData.parent]);
             }
         }
+        // Set selected user
+        this.currentUser = this.users[rawData.currentUser];
+    }
+    purge() {
+        localStorage.clear();
+        location.reload();
     }
 }
 class User {
@@ -125,7 +155,7 @@ class User {
     }
 }
 class Commentary {
-    constructor(text, author, app, parent) {
+    constructor({ text, author, app, parent }) {
         this.favorite = false;
         this.likes = 0;
         this.text = text;
@@ -158,7 +188,7 @@ class Commentary {
       `;
         }
         return `
-      <div class="comment ${isSubComment ? 'sub-comment' : ''}">
+      <div class="comment ${isSubComment ? 'sub-comment' : ''}" data-id="${this.id}">
           <div class="comment-intrinsic">
               <img class="avatar" alt="" src="./images/${this.author.avatar}">
               <div>
@@ -174,7 +204,7 @@ class Commentary {
                           <span class="reply">Ответить</span>
                       </a>
                       <a href="#" class="action-favorite">
-                          <img alt="" src="./images/heart_unfilled.svg">
+                          <img alt="" src="./images/heart_${this.favorite ? '' : 'un'}filled.svg">
                           <span class="favorite">В избранноe</span>
                       </a>
                       <div class="minus">-</div>
@@ -190,36 +220,46 @@ class Commentary {
         const stringHtml = this.getTemplate(isSubComment);
         this.commentEl = createElementFromString(stringHtml);
         const replyButton = this.commentEl.querySelector('.reply');
-        replyButton.onclick = this.handleReplyButtonPress.bind(this);
+        const plusButton = this.commentEl.querySelector('.plus');
+        const minusButton = this.commentEl.querySelector('.minus');
         const favoriteButton = this.commentEl.querySelector('.action-favorite');
+        minusButton.onclick = this.handleRatingClick.bind(this);
+        plusButton.onclick = this.handleRatingClick.bind(this);
+        replyButton.onclick = this.handleReplyButtonPress.bind(this);
         favoriteButton.onclick = (e) => {
             this.handleFavoriteClick(e);
         };
-        const plusButton = this.commentEl.querySelector('.plus');
-        const minusButton = this.commentEl.querySelector('.minus');
-        minusButton.onclick = this.handleRatingClick.bind(this);
-        plusButton.onclick = this.handleRatingClick.bind(this);
         return this.commentEl;
     }
     createReplyForm() {
         return createElementFromString(`
       <form id="sub-comment-form">
           <img alt="avatar" src="./images/${this.app.currentUser.avatar}" width="30" height="30"/>
-          <input type="text" />
+          <input type="text" name="message" autofocus/>
       </form>
     `);
     }
     handleReplyButtonPress() {
+        // Don't add the form multiple times
+        if (this.commentEl.querySelector('#sub-comment-form'))
+            return;
         const replyForm = this.createReplyForm();
-        const input = replyForm.querySelector('input[type="text"]');
-        replyForm.onsubmit = (e) => {
-            const newComment = new Commentary(input.value, this.app.currentUser, this.app, this);
+        // @ts-ignore
+        const input = replyForm.elements['message'];
+        replyForm.onsubmit = () => {
+            const newComment = new Commentary({
+                text: input.value,
+                author: this.app.currentUser,
+                app: this.app,
+                parent: this
+            });
             this.app.comments[newComment.id] = newComment;
             const newCommentEl = newComment.getHTMLElement(true);
             replyForm.replaceWith(newCommentEl);
             this.app.persist();
         };
         this.commentEl.appendChild(replyForm);
+        input.focus();
     }
     handleRatingClick(e) {
         const target = e.currentTarget;
@@ -245,6 +285,9 @@ class Commentary {
         this.favorite = !this.favorite;
         this.app.persist();
     }
+    /**
+     * Prepare data for LocalStorage
+     */
     getData() {
         return {
             id: this.id,

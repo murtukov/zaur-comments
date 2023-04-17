@@ -12,11 +12,13 @@
 
 <div id="container">
     <div id="users">
-        <h4>Choose user</h4>
+        <h4>Выберите пользователя</h4>
         <div id="user-list">
             <!-- Users list rendered in JS -->
         </div>
     </div>
+
+    <button id="purge">Сбросить</button>
 
     <hr />
 
@@ -44,7 +46,10 @@
     const users = {
       0: new User(0, 'Максим Авдеенко', 'avatar.png'),
       1: new User(1, 'Алексей_1994b', 'avatar_2.png'),
-      2: new User(2, 'Джунбокс3000', 'avatar_3.png')
+      2: new User(2, 'Джунбокс3000', 'avatar_3.png'),
+      // 3: new User(3, 'wad', 'avatar_3.png'),
+      // 4: new User(4, 'drg', 'avatar_3.png'),
+      // 5: new User(5, 'jygjy', 'avatar_3.png'),
     };
 
     new App(users);

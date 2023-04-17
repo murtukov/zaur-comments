@@ -28,6 +28,15 @@ input[type="text"]:focus {
     outline: 1px solid darkgrey;
 }
 
+#purge {
+    position: absolute;
+    left: 50px;
+    bottom: 40px;
+    padding: 10px;
+    font-family: inherit;
+    font-size: inherit;
+}
+
 #container {
     max-width: 1022px;
     margin: 0 auto;
