@@ -85,7 +85,6 @@ class App {
         this.persist();
     }
     renderAllComments() {
-        console.log(this.comments);
         for (const comment of Object.values(this.comments)) {
             if (comment.parent) {
                 const el = comment.getHTMLElement(true);
@@ -232,20 +231,24 @@ class Commentary {
         return this.commentEl;
     }
     createReplyForm() {
-        return createElementFromString(`
+        const replyForm = createElementFromString(`
       <form id="sub-comment-form">
           <img alt="avatar" src="./images/${this.app.currentUser.avatar}" width="30" height="30"/>
-          <input type="text" name="message" autofocus/>
+          <input class="sub-comment-input" type="text" name="message" />
+          <button type="submit" name="submit" disabled>Отправить</input>
       </form>
     `);
-    }
-    handleReplyButtonPress() {
-        // Don't add the form multiple times
-        if (this.commentEl.querySelector('#sub-comment-form'))
-            return;
-        const replyForm = this.createReplyForm();
-        // @ts-ignore
-        const input = replyForm.elements['message'];
+        const input = replyForm.elements.namedItem('message');
+        const submit = replyForm.elements.namedItem('submit');
+        input.oninput = () => {
+            // Disable/enable button
+            if (input.value.length > 0) {
+                submit.removeAttribute('disabled');
+            }
+            else {
+                submit.setAttribute('disabled', '');
+            }
+        };
         replyForm.onsubmit = () => {
             const newComment = new Commentary({
                 text: input.value,
@@ -254,12 +257,19 @@ class Commentary {
                 parent: this
             });
             this.app.comments[newComment.id] = newComment;
-            const newCommentEl = newComment.getHTMLElement(true);
-            replyForm.replaceWith(newCommentEl);
+            replyForm.replaceWith(newComment.getHTMLElement(true));
             this.app.persist();
         };
+        return replyForm;
+    }
+    handleReplyButtonPress() {
+        // Don't add the form multiple times
+        if (this.commentEl.querySelector('#sub-comment-form'))
+            return;
+        const replyForm = this.createReplyForm();
         this.commentEl.appendChild(replyForm);
-        input.focus();
+        // Focus on the input
+        replyForm.elements.namedItem('message').focus();
     }
     handleRatingClick(e) {
         const target = e.currentTarget;

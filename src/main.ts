@@ -134,8 +134,6 @@ class App {
   }
 
   renderAllComments() {
-    console.log(this.comments);
-
     for (const comment of Object.values(this.comments)) {
       if (comment.parent) {
         const el = comment.getHTMLElement(true);
@@ -327,21 +325,26 @@ class Commentary {
   }
 
   private createReplyForm() {
-    return createElementFromString<HTMLFormElement>(`
+    const replyForm = createElementFromString<HTMLFormElement>(`
       <form id="sub-comment-form">
           <img alt="avatar" src="./images/${this.app.currentUser.avatar}" width="30" height="30"/>
-          <input type="text" name="message" autofocus/>
+          <input class="sub-comment-input" type="text" name="message" />
+          <button type="submit" name="submit" disabled>Отправить</input>
       </form>
     `);
-  }
 
-  private handleReplyButtonPress() {
-    // Don't add the form multiple times
-    if (this.commentEl!.querySelector('#sub-comment-form')) return;
 
-    const replyForm = this.createReplyForm();
-    // @ts-ignore
-    const input = replyForm.elements['message'];
+    const input = replyForm.elements.namedItem('message') as HTMLInputElement;
+    const submit = replyForm.elements.namedItem('submit') as HTMLInputElement;
+
+    input.oninput = () => {
+      // Disable/enable button
+      if (input.value.length > 0) {
+        submit.removeAttribute('disabled');
+      } else {
+        submit.setAttribute('disabled', '');
+      }
+    }
 
     replyForm.onsubmit = () => {
       const newComment = new Commentary({
@@ -352,15 +355,22 @@ class Commentary {
       });
 
       this.app.comments[newComment.id] = newComment;
-
-      const newCommentEl = newComment.getHTMLElement(true);
-      replyForm.replaceWith(newCommentEl);
-
+      replyForm.replaceWith(newComment.getHTMLElement(true));
       this.app.persist();
     }
 
+    return replyForm;
+  }
+
+  private handleReplyButtonPress() {
+    // Don't add the form multiple times
+    if (this.commentEl!.querySelector('#sub-comment-form')) return;
+
+    const replyForm = this.createReplyForm();
     this.commentEl!.appendChild(replyForm);
-    input.focus();
+
+    // Focus on the input
+    (replyForm.elements.namedItem('message') as HTMLInputElement).focus();
   }
 
   private handleRatingClick(e: MouseEvent) {

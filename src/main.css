@@ -57,10 +57,11 @@ input[type="text"]:focus {
     flex-grow: 1;
 }
 
-#comment-form  .label-container {
+#comment-form .label-container {
     display: flex;
     justify-content: space-between;
     padding-bottom: 15px;
+    align-items: center;
 }
 
 .user-name {
@@ -199,6 +200,14 @@ input[type="text"]:focus {
     box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
 }
 
+@media screen and (max-width: 1790px) {
+    #users {
+        position: relative;
+        left: unset;
+        top: unset;
+    }
+}
+
 #users h4 {
     margin-top: 0;
     padding-inline: 10px;
@@ -235,4 +244,8 @@ input[type="text"]:focus {
     gap: 10px;
     margin-left: 90px;
     margin-top: 20px;
+}
+
+.sub-comment-input {
+    padding: 10px;
 }
